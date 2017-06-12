@@ -39,10 +39,7 @@ def isIDpresent(driver, id):
         return False
 
 def main(argv):
-    usage = ("\n   %(prog)s -c <COMPANY NAME> -m <COMPANY MAIL EXTENTION> [--headfull]\n "+
-    "  ["+bcolors.YELLOW+"!"+bcolors.ENDC+"] The URL is the url the results of the company's employees, typicaly found by visiting the company's profile and clicking the \"See all xxxx employees\""
-    "\n   ["+bcolors.GREEN+"+"+bcolors.ENDC+"] By using the --headfull option you can visualy observe the progress of the scrapper in the spawned browser window.")
-    # usage = "%(prog)s ["+bcolors.YELLOW+"-l"+bcolors.ENDC+" \'<URL\' "+bcolors.YELLOW+"-c"+bcolors.ENDC+" <COMPANY NAME>"+bcolors.YELLOW+" -m"+bcolors.ENDC+" <URL>]\n"
+    usage = ("\n   %(prog)s -c <COMPANY NAME> -m <COMPANY MAIL EXTENTION> [--headfull]")
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument("-c", "--company", type=str,
                     dest="company", required=True  ,
