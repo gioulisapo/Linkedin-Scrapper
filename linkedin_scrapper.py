@@ -37,20 +37,20 @@ def isIDpresent(driver, id):
         return False
 
 def main(argv):
-    usage = ("\n   %(prog)s -c <COMPANY NAME> -m <COMPANY MAIL EXTENTION> [--headfull]")
+    usage = ("\n   %(prog)s -c <COMPANY NAME> -m <COMPANY MAIL EXTENTION> [--headless]")
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument("-c", "--company", type=str,
                     dest="company", required=True  ,
                     help="Name of company under investigation e.g. Google, Cisco..")
-    parser.add_argument("--headfull", action="store_true",
-                    dest="headfull", required=False  ,
-                    help="Run in non-headless mode. Intended for debugging purposes.")
+    parser.add_argument("--headless", action="store_true",
+                    dest="headless", required=False  ,
+                    help="Run in headless mode. PhantomJS presents significant bugs out of yet. Not recommended")
     parser.add_argument("-m", "--companymail", type=str,
                     dest="companymail", required=True  ,
                     help="Mail extention of company under investigation e.g. cisco.com, google.com")
 
     args = parser.parse_args()
-    headfull = args.headfull
+    headless = args.headless
     company = args.company #we need it due to a bug that I couldn't be bothered to fix'
     companymail = args.companymail # need to do some online search to find the company's mail
     
@@ -104,22 +104,22 @@ def main(argv):
     #     middleflag=True
 # END TODO
 
-    if (headfull):
-        try:
-            driver = webdriver.Firefox()
-        except:
-            print ("["+bcolors.RED+"+"+bcolors.ENDC+"] Please install https://github.com/mozilla/geckodriver/releases/download/")
-            print ("\t"+bcolors.BLUE+"arch-based  : "+bcolors.ENDC+"yaourt -S geckodriver")
-            print ("\t"+bcolors.BLUE+"debian-based: "+bcolors.ENDC+"Downolad latest release from here: https://github.com/mozilla/geckodriver/releases\n\t\t      Extract, make executable and place geckodriver in your PATH.")
-            print ("\t"+bcolors.BLUE+"Windows     : "+bcolors.ENDC+"Donwload and extract PhantomJS in linkedin_scraper folder.")
-            sys.exit(0)
-    else:
+    if (headless):
         try:
             driver = webdriver.PhantomJS()
         except:
             print ("["+bcolors.RED+"+"+bcolors.ENDC+"] Please install PhantomJS")
             print ("\t"+bcolors.BLUE+"arch-based  : "+bcolors.ENDC+"yaourt -S phantomjs")
             print ("\t"+bcolors.BLUE+"debian-based: "+bcolors.ENDC+"sudo apt-get install build-essential chrpath libssl-dev libxft-dev libfreetype6-dev libfreetype6 libfontconfig1-dev libfontconfig1 -y;\n\t\t      sudo wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2;\n\t\t      sudo tar xvjf phantomjs-2.1.1-linux-x86_64.tar.bz2 -C /usr/local/share/;\n\t\t      sudo ln -s /usr/local/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin/;\n\t\t      phantomjs --version")
+            print ("\t"+bcolors.BLUE+"Windows     : "+bcolors.ENDC+"Donwload and extract PhantomJS in linkedin_scraper folder.")
+            sys.exit(0) 
+    else:
+        try:
+            driver = webdriver.Firefox()
+        except:
+            print ("["+bcolors.RED+"+"+bcolors.ENDC+"] Please install https://github.com/mozilla/geckodriver/releases/download/")
+            print ("\t"+bcolors.BLUE+"arch-based  : "+bcolors.ENDC+"yaourt -S geckodriver")
+            print ("\t"+bcolors.BLUE+"debian-based: "+bcolors.ENDC+"Downolad latest release from here: https://github.com/mozilla/geckodriver/releases\n\t\t      Extract, make executable and place geckodriver in your PATH.")
             print ("\t"+bcolors.BLUE+"Windows     : "+bcolors.ENDC+"Donwload and extract PhantomJS in linkedin_scraper folder.")
             sys.exit(0)
     print('['+bcolors.BLUE+'+'+bcolors.ENDC+'] Intialising...')
@@ -144,8 +144,11 @@ def main(argv):
     try:
         driver.get(url)
     except:
-        print('['+bcolors.RED+'+'+bcolors.ENDC+'] Wrong URL provided: "'+bcolors.ORANGE+''+url+bcolors.ENDC+'"\n    Please Provide correct URL.')
-        sys.exit(0)
+        # print('['+bcolors.RED+'+'+bcolors.ENDC+'] Wrong URL provided: "'+bcolors.ORANGE+''+url+bcolors.ENDC+'"\n    Please Provide correct URL.')
+        # There is a bug with PhantmJS driver can't get URL. Creating new driver fixes it.
+        driver = webdriver.PhantomJS()
+        driver.get(url)
+        # sys.exit(0)
     time.sleep(4)
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     completeName = os.path.join("./", "bot_results.html")
