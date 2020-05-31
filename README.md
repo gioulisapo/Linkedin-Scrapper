@@ -1,3 +1,4 @@
+# No longer maintened | For educational purposeS
 # Linkedin-Scrapper
 ## Description
 This script is to be used when a list of all the possible employee emails is required. Provided the url, a valid linkedin username and password, the program will return two .txt files
